@@ -6,9 +6,9 @@ Sub Main
 
 ' Definitions
 Dim axisoptions$(2)
-axisoptions$(0) = "X-Axis"
+axisoptions$(0) = "Z-Axis"
 axisoptions$(1) = "Y-Axis"
-axisoptions$(2) = "Z-Axis"
+axisoptions$(2) = "X-Axis"
 Dim Axis As Integer
 
 Dim NumberOfProbesInWidthDim As Integer
@@ -70,10 +70,10 @@ ReDim HeightCoordinates(NumberOfProbesInHeightDim)
 
 Dim i As Integer
 For i = 0 To NumberOfProbesInWidthDim
-	WidthCoordinates(i) = (i* NumberOfProbesInWidthDim - NumberOfProbesInWidthDim^2/2 )*ScannerWidthSpacing'
+	WidthCoordinates(i) = (i - NumberOfProbesInWidthDim/2 )*ScannerWidthSpacing'
 Next i
 For i  = 0 To NumberOfProbesInHeightDim
-	HeightCoordinates(i) = (i* NumberOfProbesInHeightDim -NumberOfProbesInHeightDim^2/2)*ScannerHeightSpacing
+	HeightCoordinates(i) = (i - NumberOfProbesInHeightDim/2)*ScannerHeightSpacing
 Next i
 
 
@@ -96,9 +96,9 @@ End Function
 
 
 Private Function CreateProbes(WidthCoordinates() As Double, HeightCoordinates() As Double,ScannerDistance As Double,Axis As Integer) As Boolean
-	Dim W As Double
+	Dim w As Double
 	Dim h As Double
-	For Each W In WidthCoordinates
+	For Each w In WidthCoordinates
 		For Each h In HeightCoordinates
 			With Probe
 				.Reset
@@ -106,17 +106,17 @@ Private Function CreateProbes(WidthCoordinates() As Double, HeightCoordinates() 
 				.Field ("efield")
 				.SetCoordinateSystemType ("cartesian")
 				If Axis = 0 Then
-					.SetPosition1 (ScannerDistance)
-					.SetPosition2 (W)
-					.SetPosition3 (h)
+					.SetPosition1 (w)
+					.SetPosition2 (h)
+					.SetPosition3 (ScannerDistance)
 				ElseIf Axis = 1 Then
-					.SetPosition1 (W)
+					.SetPosition1 (w)
 					.SetPosition2 (ScannerDistance)
 					.SetPosition3 (h)
 				ElseIf Axis = 2 Then
-					.SetPosition1 (W)
-					.SetPosition2 (h)
-					.SetPosition3 (ScannerDistance)
+					.SetPosition1 (ScannerDistance)
+					.SetPosition2 (w)
+					.SetPosition3 (h)
 				End If
 				.Orientation ("All")
 				.Origin ("zero")
