@@ -66,7 +66,7 @@ If Method = 0 Then
 		For k = 1 To n
 			ThetaAngles(idx) = k*pi/n - pi/(2*n)
 			PhiAngles(idx) = i*2*pi/n - pi/n
-			Debug.Print ThetaAngles(idx)*180/pi;PhiAngles(idx)*180/pi
+			'Debug.Print ThetaAngles(idx)*180/pi;PhiAngles(idx)*180/pi
 			idx = idx + 1
 		Next k
 	Next i
@@ -131,7 +131,8 @@ Private Function CreateProbes(ThetaAngles() As Double, PhiAngles() As Double,Sca
 	For i = 0 To IndexEnd
 		With Probe
 			.Reset
-			.AutoLabel 1
+			.ID i
+			.AutoLabel 0
 			.Field ("efield")
 			.SetCoordinateSystemType ("cartesian")
 			If Axis = 0 Then
@@ -157,6 +158,7 @@ Private Function CreateProbes(ThetaAngles() As Double, PhiAngles() As Double,Sca
 			.Origin ("zero")
 			.Create
 		End With
+		Probe.NewCaption (i,"EFieldProbe"&CStr(i))
 	Next
 
 End Function
