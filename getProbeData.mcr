@@ -69,7 +69,8 @@ For Each f In frequency
 	' Text File to Store it into
 	Open exportDir & "\NearFieldProbeResults" & f & "GHz.txt" For Output As #1
 	' File Header
-	Print #1,"X";"	";"Y";"	";"Z";"	";"R";"	";"Theta";"	";"Phi";"	";"ExReal";"	";"ExImg";"	";"EyReal";"	";"EyImg";"	";"EzReal";"	";"EzImg";"	";"EabsReal";"	";"EabsImg"
+	'Print #1,"X";"	";"Y";"	";"Z";"	";"R";"	";"Theta";"	";"Phi";"	";"ExReal";"	";"ExImg";"	";"EyReal";"	";"EyImg";"	";"EzReal";"	";"EzImg";"	";"EabsReal";"	";"EabsImg"
+	Print #1,"X";"	";"Y";"	";"Z";"	";"ExReal";"	";"ExImg";"	";"EyReal";"	";"EyImg";"	";"EzReal";"	";"EzImg";"	";"EabsReal";"	";"EabsImg"
 
 	' Iterate through Probes
 	Probe.GetFirst
@@ -81,14 +82,14 @@ For Each f In frequency
 		caption = Probe.GetCaption
 
 		' Calculate Spherical Coordinates
-		r(idx) = Sqr(x(idx)^2 + y(idx)^2 + z(idx)^2)
-		theta(idx) = ACos(z(idx)/r(idx))
-		phi(idx) = Atn2(y(idx),x(idx))
+		'r(idx) = Sqr(x(idx)^2 + y(idx)^2 + z(idx)^2)
+		'theta(idx) = ACos(z(idx)/r(idx))
+		'phi(idx) = Atn2(y(idx),x(idx))
 
 		' Read E-Field Data at given frequency
 		dataAbs = Resulttree.GetResultFromTreeItem("1D Results\Probes\E-Field\" & caption & "(Abs) [1]","3D:RunID:0")
 		Dim n As Integer
-		While dataAbs.GetX(n) <> f
+		While Abs(dataAbs.GetX(n)-f)>= 0.002
 			n = n+1
 		Wend
 		dataX = Resulttree.GetResultFromTreeItem("1D Results\Probes\E-Field\" & caption & "(X) [1]","3D:RunID:0")
@@ -96,8 +97,8 @@ For Each f In frequency
 		dataZ = Resulttree.GetResultFromTreeItem("1D Results\Probes\E-Field\" & caption & "(Z) [1]","3D:RunID:0")
 
 		' Print Values to File
-		Print #1,x(idx);"	";y(idx);"	";z(idx);"	";r(idx);"	";theta(idx);"	";phi(idx);"	";dataX.GetYRe(n);"	";dataX.GetYIm(n);"	";dataY.GetYRe(n);"	";dataY.GetYIm(n);"	";dataZ.GetYRe(n);"	";dataZ.GetYIm(n);"	";dataAbs.GetYRe(n);"	";dataAbs.GetYIm(n)
-
+		'Print #1,x(idx);"	";y(idx);"	";z(idx);"	";r(idx);"	";theta(idx);"	";phi(idx);"	";dataX.GetYRe(n);"	";dataX.GetYIm(n);"	";dataY.GetYRe(n);"	";dataY.GetYIm(n);"	";dataZ.GetYRe(n);"	";dataZ.GetYIm(n);"	";dataAbs.GetYRe(n);"	";dataAbs.GetYIm(n)
+		Print #1,x(idx);"	";y(idx);"	";z(idx);"	";dataX.GetYRe(n);"	";dataX.GetYIm(n);"	";dataY.GetYRe(n);"	";dataY.GetYIm(n);"	";dataZ.GetYRe(n);"	";dataZ.GetYIm(n);"	";dataAbs.GetYRe(n);"	";dataAbs.GetYIm(n)
 		Probe.GetNext
 	Next idx
 	Close #1
