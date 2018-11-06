@@ -89,7 +89,7 @@ For Each f In frequency
 		' Read E-Field Data at given frequency
 		dataAbs = Resulttree.GetResultFromTreeItem("1D Results\Probes\E-Field\" & caption & "(Abs) [1]","3D:RunID:0")
 		Dim n As Integer
-		While Abs(dataAbs.GetX(n)-f)>= 0.002
+		While (Abs(dataAbs.GetX(n)-f)>= 0.002) And (n<NumberOfProbes)
 			n = n+1
 		Wend
 		dataX = Resulttree.GetResultFromTreeItem("1D Results\Probes\E-Field\" & caption & "(X) [1]","3D:RunID:0")
