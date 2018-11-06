@@ -15,21 +15,24 @@ Check the CST documentation for a VBA reference.
 
 ## Create a Planar Scanner
 To create a set of probes on a plane use the *CreatePlanarScanner* macro.
+
 ![Alt text](images/planar_create.png?raw=true "Create Planar Scanner")
+
 The plane can be aligned with either x-,y- or z-axis of the model WCS.
 Parameters are:
-    - Number of probes in first direction
-    - Number of probes in second direction
-    - Spacing of probes in first direction
-    - Spacing of probes in second direction
-    - Distance of plane to origin
+
+* Number of probes in first direction
+* Number of probes in second direction
+* Spacing of probes in first direction
+* Spacing of probes in second direction
+* Distance of plane to origin
 
 All distances have to be provided in mm. 
 At the same time make sure that the CST unit for distance is set to mm as well.
 
 After creation of the probes, you will see something like this:
-![Alt text](images/patch_antenna_w_scanner.png?raw=true "Created Probes")
 
+![Alt text](images/patch_antenna_w_scanner.png?raw=true "Created Probes")
 
 Before simulation, make sure to correctly build a mesh so that the probes are included (This is usually done automatically but can lead to problems in some templates).
 
