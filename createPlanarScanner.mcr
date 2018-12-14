@@ -22,10 +22,10 @@ Dim WidthVariance As Double
 Dim HeightVariance As Double
 Dim DistanceVariance As Double
 
-NumberOfProbesInWidthDim = 30
-NumberOfProbesInHeightDim = 30
-ScannerWidthSpacing = 30.0
-ScannerHeightSpacing = 30.0
+NumberOfProbesInWidthDim = 40
+NumberOfProbesInHeightDim = 40
+ScannerWidthSpacing = 29.0
+ScannerHeightSpacing = 29.0
 ScannerDistance = 300.0
 WidthVariance = 0.0
 HeightVariance = 0.0
@@ -144,7 +144,7 @@ Private Function CreateProbes(WidthCoordinates() As Double, HeightCoordinates() 
 	If toggle_file_write = True Then
 		Open exportDir & "\ProbePositions.txt" For Output As #1
 		' File Header
-		Print #1,"X";"	";"Y";"	";"Z"
+		Print #1,"x";"	";"y";"	";"z"
 	End If
 
 	For Each w In WidthCoordinates
@@ -211,10 +211,7 @@ Private Function CreateProbes(WidthCoordinates() As Double, HeightCoordinates() 
 			End If
 		Next
 	Next
-	If toggle_file_write = True Then
-		Close #1
-	End If
-
+	Close #1
 End Function
 
 
