@@ -6,44 +6,43 @@ Sub Main
 
 ' Definitions
 
-Dim NumberOfProbes As Integer
+Dim NumberOfProbesTheta As Integer
+Dim NumberOfProbesPhi As Integer
 Dim ScannerDistance As Double
-Dim methods$(1)
-methods$(0) = "Realistic"
-methods$(1) = "Golden Spiral"
-Dim Method As Integer
 Dim axisoptions$(2)
 axisoptions$(0) = "X-Axis"
 axisoptions$(1) = "Y-Axis"
 axisoptions$(2) = "Z-Axis"
 Dim Axis As Integer
 
-NumberOfProbes = 100
+NumberOfProbesTheta = 30
+NumberOfProbesPhi = 30
 ScannerDistance = 300.0
 
 
 'User Dialog For Planar Scanner Parameters
-	Begin Dialog UserDialog 520,130 ' %GRID:20,10,1,1
-		TextBox 160,70,160,20,.NumberOfProbes
-		TextBox 160,100,160,20,.ScannerDistance
+	Begin Dialog UserDialog 540,210 ' %GRID:20,10,1,1
+		TextBox 160,110,160,20,.NumberOfProbesTheta
+		TextBox 160,150,160,20,.NumberOfProbesPhi
+		TextBox 160,70,160,20,.ScannerDistance
 		OKButton 380,60,120,20
 		CancelButton 380,90,120,20
-		Text 20,70,140,20,"Number Of Probes",.Text1
-		Text 20,100,140,20,"Scanner Distance",.Text2
-		DropListBox 20,30,160,20,methods(),.Method
-		DropListBox 200,30,160,20,axisoptions(),.Axis
-		Text 20,10,140,10,"Placing Method",.Text3
-		Text 200,10,140,10,"Reference Axis",.Text4
+		Text 20,100,140,30,"Number Of Probes in Theta Dimension",.Text1
+		Text 20,140,140,30,"Number Of Probes in Phi Dimension",.Text5
+		Text 20,70,140,20,"Scanner Distance",.Text2
+		DropListBox 20,30,160,20,axisoptions(),.Axis
+		Text 20,10,140,10,"Reference Axis",.Text4
 	End Dialog
 Dim dlg As UserDialog
-dlg.NumberOfProbes=CStr(NumberOfProbes)
+dlg.NumberOfProbesTheta=CStr(NumberOfProbesTheta)
+dlg.NumberOfProbesPhi=CStr(NumberOfProbesPhi)
 dlg.ScannerDistance=CStr(ScannerDistance)
 If (Dialog(dlg) = 0) Then Exit All
 
 ' Save User Input
-NumberOfProbes = Evaluate(dlg.NumberOfProbes)
+NumberOfProbesTheta = Evaluate(dlg.NumberOfProbesTheta)
+NumberOfProbesPhi = Evaluate(dlg.NumberOfProbesPhi)
 ScannerDistance =  Evaluate(dlg.ScannerDistance)
-Method = Evaluate(dlg.Method)
 Axis = Evaluate(dlg.Axis)
 
 ' Calculate Probe Positions
@@ -54,38 +53,27 @@ Dim i As Integer
 Dim k As Integer
 Dim idx As Integer
 
-If Method = 0 Then
-	'Realistic Placing Method
-	ReDim ThetaAngles(NumberOfProbes)
-	ReDim PhiAngles(NumberOfProbes)
 
-	Dim n As Integer
-	n = Sqr(NumberOfProbes)
-	idx = 0
-	For i = 1 To n
-		For k = 1 To n
-			ThetaAngles(idx) = k*pi/n - pi/(2*n)
-			PhiAngles(idx) = i*2*pi/n - pi/n
-			'Debug.Print ThetaAngles(idx)*180/pi;PhiAngles(idx)*180/pi
-			idx = idx + 1
-		Next k
-	Next i
+'Realistic Placing Method
+ReDim ThetaAngles(NumberOfProbesPhi*NumberOfProbesTheta)
+ReDim PhiAngles(NumberOfProbesPhi*NumberOfProbesTheta)
 
-ElseIf Method = 1 Then
-	'Golden Spiral Method
-	ReDim ThetaAngles(NumberOfProbes)
-	ReDim PhiAngles(NumberOfProbes)
-	For i = 0 To NumberOfProbes-1
-		ThetaAngles(i) = ACos(1 - 2*(i+0.5)/NumberOfProbes)
-		PhiAngles(i) = pi * (1 + Sqr(5)) * (i+0.5)
-	Next i
-End If
+
+idx = 0
+For i = 0 To NumberOfProbesPhi - 1
+	For k = 0 To NumberOfProbesTheta - 1
+		ThetaAngles(idx) = (k+1/2) * pi/NumberOfProbesTheta
+		PhiAngles(idx) = i*2*pi/NumberOfProbesPhi
+		Debug.Print ThetaAngles(idx)*180/pi;PhiAngles(idx)*180/pi
+		idx = idx + 1
+	Next k
+Next i
 
 
 'Clear Old Probes
 'ClearProbes()
 ' Create Probes
-CreateProbes(ThetaAngles,PhiAngles,ScannerDistance,NumberOfProbes,Method,Axis)
+CreateProbes(ThetaAngles,PhiAngles,ScannerDistance,NumberOfProbesTheta,NumberOfProbesPhi,Axis)
 
 
 
@@ -120,19 +108,12 @@ Private Function ClearProbes()
 End Function
 
 
-Private Function CreateProbes(ThetaAngles() As Double, PhiAngles() As Double,ScannerDistance As Double,NumberOfProbes As Integer, Method As Integer, Axis As Integer) As Boolean
+Private Function CreateProbes(ThetaAngles() As Double, PhiAngles() As Double,ScannerDistance As Double,NumberOfProbesTheta As Integer, NumberOfProbesPhi As Integer, Axis As Integer) As Boolean
 	Dim i As Integer
-	Dim IndexEnd As Integer
-	If Method = 0 Then
-		IndexEnd = NumberOfProbes-1
-	ElseIf Method = 1 Then
-		IndexEnd = NumberOfProbes
-	End If
-	For i = 0 To IndexEnd
+	For i = 0 To NumberOfProbesTheta*NumberOfProbesPhi-1
 		With Probe
 			.Reset
-			.ID i
-			.AutoLabel 0
+			.AutoLabel 1
 			.Field ("efield")
 			.SetCoordinateSystemType ("cartesian")
 			If Axis = 0 Then
@@ -158,7 +139,6 @@ Private Function CreateProbes(ThetaAngles() As Double, PhiAngles() As Double,Sca
 			.Origin ("zero")
 			.Create
 		End With
-		Probe.NewCaption (i,"EFieldProbe"&CStr(i))
 	Next
 
 End Function
